@@ -29,6 +29,10 @@ public:
             return lpNodeCurrent->value;
         }
 
+        LPNODE getNode() {
+            return lpNodeCurrent;
+        }
+
         _ITERATOR& operator++() {
             lpNodeCurrent = lpNodeCurrent->lpNext;
             return *this;
@@ -151,23 +155,29 @@ public:
         }
     }
 
-    void pop_bottom() { // O(N)
-        LPNODE lpTempNode;
+    void pop_bottom() { //O(N)
+        ITERATOR iterator;
+        ITERATOR prevIterator;
 
-        if (!isEmpty() && length() != 1) {
-            lpTempNode = head;
-
-            while (lpTempNode->lpNext->lpNext != nullptr) {
-                lpTempNode = lpTempNode->lpNext;
+        if (!isEmpty()) {
+            if (length() == 1) {
+                delete head;
+                head = nullptr;
+                size = 0;
             }
+            else {
+                iterator = begin();
+                prevIterator = iterator;
+                ++iterator;
 
-            delete lpTempNode->lpNext;
-            lpTempNode->lpNext = nullptr;
-            size--;
-        }
-        else if (!isEmpty()){
-            delete head;
-            head = nullptr;
+                while (++iterator != end()) {
+                    ++prevIterator;
+                }
+
+                delete prevIterator.getNode()->lpNext;
+                prevIterator.getNode()->lpNext = nullptr;
+                size--;
+            }
         }
     }
 
@@ -176,7 +186,7 @@ public:
     }
 
     void clear() { // O(N)
-        while (head != nullptr) {
+        while (begin() != end()) {
             pop();
         }
     }
@@ -188,11 +198,11 @@ public:
 
         if (!isEmpty() && length() != 1) {
             sizeTempLength = length();
-            newNode = new NODE(top());
+            newNode = new NODE(*begin());
             pop();
 
-            while (head != nullptr) {
-                newNode = new NODE(top(), newNode);
+            while (begin() != end()) {
+                newNode = new NODE(*begin(), newNode);
                 pop();
             }
 
