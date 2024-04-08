@@ -103,6 +103,7 @@ public:
     }
 
     LINKED_LIST& push_bottom(const LPNODE newNode) { // O(N)
+        ITERATOR iterator;
         LPNODE currentNode;
 
         currentNode = head;
@@ -111,7 +112,7 @@ public:
             head = newNode;
         }
         else {
-            while (currentNode->lpNext != nullptr) {
+            for (iterator = begin(); ++iterator != end();) {
                 currentNode = currentNode->lpNext;
             }
             currentNode->lpNext = newNode;
@@ -122,6 +123,7 @@ public:
 
     LINKED_LIST& push_bottom(LPNODE newNode, size_t size) { // O(N)
         LPNODE currentNode;
+        ITERATOR iterator;
 
         currentNode = head;
 
@@ -129,7 +131,7 @@ public:
             head = newNode;
         }
         else {
-            while (currentNode->lpNext != nullptr) {
+            for (iterator = begin(); ++iterator != end();) {
                 currentNode = currentNode->lpNext;
             }
             currentNode->lpNext = newNode;
@@ -201,12 +203,11 @@ public:
 
     T& operator[](size_t index) {
         ITERATOR iterator;
-        iterator = begin();
 
         index = (index + length()) % length();
 
-        while (index--) {
-            ++iterator;
+        for (iterator = begin(); iterator != end() && index != 0; ++iterator) {
+            index--;
         }
 
         return *iterator;
@@ -229,6 +230,7 @@ public:
     LINKED_LIST<T>& operator+(LINKED_LIST<T>& list) {
         LPNODE newHead;
         LPNODE currentNode;
+        ITERATOR iterator;
 
         if (list.isEmpty()) {
             return *this;
@@ -237,7 +239,7 @@ public:
         newHead = new NODE(*list.begin());
         currentNode = newHead;
 
-        for (ITERATOR iterator = ++list.begin(); iterator != list.end(); ++iterator) {
+        for (iterator = ++list.begin(); iterator != list.end(); ++iterator) {
             currentNode->lpNext = new NODE(*iterator);
             currentNode = currentNode->lpNext;
         }
